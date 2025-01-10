@@ -6,20 +6,21 @@ fileInput.addEventListener('change', (e) => {
     // process the data to something more readable
     //      remove repeating applications (check names, emails, numbers)
     //      display a new formatted table
+
     if(file){
         const reader = new FileReader();
         reader.onload = (e) => {
             const csvString = e.target.result;
-            const parsedData = parseCSV(csvString);
+            // using PapaParse library
+            const parsedData = Papa.parse(csvString, {
+                header: true, // Extract headers
+                skipEmptyLines: true, // Ignore empty lines
+            });
 
-            console.log(parsedData);
+            const uniqueApplicants = Array.from(new Map(parsedData.data.map(item => [item['Email Address'], item])).values());
+
+            console.log(uniqueApplicants);
         }
         reader.readAsText(file);
     }
 });
-
-function parseCSV(csvString){
-    const lines = csvString.split('\n');
-    const filteredLines = lines.filter(line => line.trim() !== '');
-    return filteredLines.map(line => line.split(','));
-}
