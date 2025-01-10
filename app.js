@@ -1,4 +1,6 @@
 const fileInput = document.getElementById('xlsx-file-input');
+const applicantTableContainer = document.getElementById('applicant-table');
+const tableHeaders = ['Date','Name','Email Address','Contact Number','Message'];
 
 fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0]; // csv file
@@ -20,7 +22,35 @@ fileInput.addEventListener('change', (e) => {
             const uniqueApplicants = Array.from(new Map(parsedData.data.map(item => [item['Email Address'], item])).values());
 
             console.log(uniqueApplicants);
+            const table = createTable(uniqueApplicants);
+            applicantTableContainer.innerHTML = '';
+            applicantTableContainer.appendChild(table);
+            
         }
         reader.readAsText(file);
     }
 });
+
+function createTable(data){
+    const table = document.createElement('table')
+
+    const headerRow = document.createElement('tr')
+    tableHeaders.forEach(header => {
+        const th = document.createElement('th');
+        th.textContent = header;
+        headerRow.appendChild(th);
+    });
+    table.appendChild(headerRow);
+
+    data.forEach( row =>{
+        const tableRow = document.createElement('tr');
+        Object.keys(data[0]).forEach(header =>{
+            const td = document.createElement('td');
+            td.textContent = row[header] || '';
+            tableRow.appendChild(td);
+        });
+        table.appendChild(tableRow);
+    })
+
+    return table;
+}
