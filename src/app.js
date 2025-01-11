@@ -22,6 +22,12 @@ fileInput.addEventListener('change', (e) => {
             const uniqueApplicants = Array.from(new Map(parsedData.data.map(item => [item['Email Address'], item])).values());
 
             console.log(uniqueApplicants);
+            // update the tenant.json with new tenants
+            
+            fetch('/api/tenants')
+                .then(res => res.json())
+                .then(data => updateTenants(uniqueApplicants))
+
             const table = createTable(uniqueApplicants);
             applicantTableContainer.innerHTML = '';
             applicantTableContainer.appendChild(table);
@@ -53,4 +59,17 @@ function createTable(data){
     })
 
     return table;
+}
+
+function updateTenants(data){
+    fetch('/api/tenants', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+        .then(res => res.json())
+        .then(response => console.log(response.message))
+        .catch(err => console.error('Error updateing users:', err));
 }
