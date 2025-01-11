@@ -62,7 +62,7 @@ function createTable(data){
 }
 
 function updateTenants(data){
-    fetch('/api/tenants', {
+    fetch('https://shih-tenant-application-processing.onrender.com/api/tenants', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
