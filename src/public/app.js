@@ -26,8 +26,14 @@ fileInput.addEventListener('change', (e) => {
             // update the tenant.json with new tenants
             
             fetch(`${BASE_URL}/api/tenants`)
-                .then(res => res.json())
-                .then(data => updateTenants(uniqueApplicants))
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`Failed to fetch tenants: ${res.status}`);
+                }
+                return res.json();  // parse the response if it's valid
+            })
+            .then(data => updateTenants(uniqueApplicants))
+            .catch(err => console.error('Error fetching tenants:', err));
 
             const table = createTable(uniqueApplicants);
             applicantTableContainer.innerHTML = '';
