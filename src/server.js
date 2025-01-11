@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public','index.html'));
 })
 
-app.get(`${API_BASE_PATH}/api/tenants`, (req, res) => {
+app.get(`/api/tenants`, (req, res) => {
     const filePath = path.join(__dirname, 'tenants.json');
     fs.readFile(filePath, (err, data) => {
         if(err){
@@ -28,7 +28,7 @@ app.get(`${API_BASE_PATH}/api/tenants`, (req, res) => {
     })
 })
 
-app.post(`${API_BASE_PATH}/api/tenants`, (req, res) => {
+app.post(`/api/tenants`, (req, res) => {
     const filePath = path.join(__dirname, 'tenants.json');
     const updatedTenants = req.body;
 
