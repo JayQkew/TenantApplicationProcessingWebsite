@@ -41,5 +41,5 @@ app.post('/api/tenants', (req, res) => {
 });
 
 app.listen(PORT, ()=>{
-    console.log(`Server is listening on port 8080 ${PORT}`)
+    console.log(`Server is listening on port ${PORT}`)
 })
