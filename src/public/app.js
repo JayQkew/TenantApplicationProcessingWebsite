@@ -24,7 +24,7 @@ fileInput.addEventListener('change', (e) => {
             console.log(uniqueApplicants);
             // update the tenant.json with new tenants
             
-            fetch('/api/tenants')
+            fetch('https://shih-tenant-application-processing.onrender.com/api/tenants')
                 .then(res => res.json())
                 .then(data => updateTenants(uniqueApplicants))
 
