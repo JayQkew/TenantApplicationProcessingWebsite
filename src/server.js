@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const cors = require('cors');
+const API_BASE_PATH = process.env.API_BASE_PATH || '';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -14,7 +15,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public','index.html'));
 })
 
-app.get('/api/tenants', (req, res) => {
+app.get(`${API_BASE_PATH}/api/tenants`, (req, res) => {
     const filePath = path.join(__dirname, 'tenants.json');
     fs.readFile(filePath, (err, data) => {
         if(err){
@@ -27,7 +28,7 @@ app.get('/api/tenants', (req, res) => {
     })
 })
 
-app.post('/api/tenants', (req, res) => {
+app.post(`${API_BASE_PATH}/api/tenants`, (req, res) => {
     const filePath = path.join(__dirname, 'tenants.json');
     const updatedTenants = req.body;
 

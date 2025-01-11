@@ -1,6 +1,7 @@
 const fileInput = document.getElementById('xlsx-file-input');
 const applicantTableContainer = document.getElementById('applicant-table');
 const tableHeaders = ['Date','Name','Email Address','Contact Number','Message'];
+const BASE_URL = window.location.origin;
 
 fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0]; // csv file
@@ -24,7 +25,7 @@ fileInput.addEventListener('change', (e) => {
             console.log(uniqueApplicants);
             // update the tenant.json with new tenants
             
-            fetch('https://shih-tenant-application-processing.onrender.com/api/tenants')
+            fetch(`${BASE_URL}/api/tenants`)
                 .then(res => res.json())
                 .then(data => updateTenants(uniqueApplicants))
 
@@ -62,7 +63,7 @@ function createTable(data){
 }
 
 function updateTenants(data){
-    fetch('https://shih-tenant-application-processing.onrender.com/api/tenants', {
+    fetch(`${BASE_URL}/api/tenants`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
