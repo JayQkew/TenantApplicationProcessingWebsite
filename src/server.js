@@ -13,7 +13,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public','index.html'));
-})
+});
 
 app.get(`/api/tenants`, (req, res) => {
     const filePath = path.join(__dirname, 'tenants.json');
@@ -23,10 +23,10 @@ app.get(`/api/tenants`, (req, res) => {
             return res.status(500).json({error: 'Failed to read tenants.json'});
         }
 
-        const users = JSON.parse(data);
-        res.json(users);
-    })
-})
+        const tenants = JSON.parse(data);
+        res.json(tenants);
+    });
+});
 
 app.post(`/api/tenants`, (req, res) => {
     const filePath = path.join(__dirname, 'tenants.json');
@@ -43,4 +43,4 @@ app.post(`/api/tenants`, (req, res) => {
 
 app.listen(PORT, ()=>{
     console.log(`Server is listening on port ${PORT}`)
-})
+});
