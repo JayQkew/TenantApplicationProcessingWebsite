@@ -1,7 +1,7 @@
 const fileInput = document.getElementById('xlsx-file-input');
 const applicantTableContainer = document.getElementById('applicant-table');
 const tableHeaders = ['Date','Name','Email Address','Contact Number','Message'];
-const BASE_URL = window.location.origin;
+const BASE_URL = window.location.origin + (process.env.API_BASE_PATH || '');
 
 fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0]; // csv file
