@@ -43,35 +43,36 @@ app.post('/api/tenants', async (req, res) => {
   console.log(tenants);
 
   try {
-      // Check for duplicates based on email
-      for (const tenant of tenants) {
-          const { data: existingTenant, error: selectError } = await supabase
-              .from('tenants')
-              .select('*')
-              .eq('email', tenant.email)
-              .single(); // Get a single record based on email
+      // Step 1: Fetch all existing tenants from the database
+      const { data: existingTenants, error: fetchError } = await supabase
+          .from('tenants')
+          .select('email'); // Only fetch emails to compare
 
-          if (selectError) {
-              console.error('Error checking existing tenant:', selectError);
-              return res.status(500).json({ error: 'Failed to check existing tenant' });
-          }
-
-          if (existingTenant) {
-              // If tenant exists, skip the insertion for this one
-              console.log(`Tenant already exists: ${tenant.email}`);
-              continue;
-          }
-          
-          // Insert tenant only if it does not exist
-          const { error: insertError } = await supabase.from('tenants').insert(tenant);
-
-          if (insertError) {
-              console.error('Error adding tenant:', insertError);
-              return res.status(500).json({ error: 'Failed to add tenant' });
-          }
+      if (fetchError) {
+          console.error('Error fetching existing tenants:', fetchError);
+          return res.status(500).json({ error: 'Failed to fetch existing tenants' });
       }
 
-      res.json({ message: 'Tenants added successfully' });
+      // Step 2: Filter the incoming tenants to find the new ones
+      const existingEmails = existingTenants.map(tenant => tenant.email);
+      const newTenants = tenants.filter(tenant => !existingEmails.includes(tenant.email));
+
+      console.log('New Tenants:', newTenants);
+
+      // Step 3: Insert new tenants into the database
+      if (newTenants.length > 0) {
+          const { error: insertError } = await supabase.from('tenants').insert(newTenants);
+
+          if (insertError) {
+              console.error('Error adding tenants:', insertError);
+              return res.status(500).json({ error: 'Failed to add tenants' });
+          }
+
+          res.json({ message: 'New tenants added successfully' });
+      } else {
+          res.json({ message: 'No new tenants to add' });
+      }
+
   } catch (err) {
       console.error('Unexpected error adding tenants:', err);
       res.status(500).json({ error: 'Unexpected error adding tenants' });
