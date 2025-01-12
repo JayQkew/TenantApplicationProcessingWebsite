@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
+const cors = require(cors);
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -10,6 +11,7 @@ const supabaseUrl = 'https://uhgkseqdeeyfpwoqfjhd.supabase.co';
 const supabaseKey = process.env.SUPABASE_KEY; // Ensure SUPABASE_KEY is set in your environment variables
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
