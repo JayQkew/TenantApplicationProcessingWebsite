@@ -36,21 +36,42 @@ app.get('/api/tenants', async (req, res) => {
 
 // Add tenants to the database
 app.post('/api/tenants', async (req, res) => {
-    const tenants = req.body;
+  const tenants = req.body;
 
-    try {
-        const { error } = await supabase.from('tenants').insert(tenants);
+  try {
+      // Check for duplicates based on email
+      for (const tenant of tenants) {
+          const { data: existingTenant, error: selectError } = await supabase
+              .from('tenants')
+              .select('*')
+              .eq('email', tenant.email)
+              .single(); // Get a single record based on email
 
-        if (error) {
-            console.error('Error adding tenants:', error);
-            return res.status(500).json({ error: 'Failed to add tenants' });
-        }
+          if (selectError) {
+              console.error('Error checking existing tenant:', selectError);
+              return res.status(500).json({ error: 'Failed to check existing tenant' });
+          }
 
-        res.json({ message: 'Tenants added successfully' });
-    } catch (err) {
-        console.error('Unexpected error adding tenants:', err);
-        res.status(500).json({ error: 'Unexpected error adding tenants' });
-    }
+          if (existingTenant) {
+              // If tenant exists, skip the insertion for this one
+              console.log(`Tenant already exists: ${tenant.email}`);
+              continue;
+          }
+          
+          // Insert tenant only if it does not exist
+          const { error: insertError } = await supabase.from('tenants').insert(tenant);
+
+          if (insertError) {
+              console.error('Error adding tenant:', insertError);
+              return res.status(500).json({ error: 'Failed to add tenant' });
+          }
+      }
+
+      res.json({ message: 'Tenants added successfully' });
+  } catch (err) {
+      console.error('Unexpected error adding tenants:', err);
+      res.status(500).json({ error: 'Unexpected error adding tenants' });
+  }
 });
 
 app.listen(PORT, () => {

@@ -2,10 +2,6 @@ const fileInput = document.getElementById('xlsx-file-input');
 const applicantTableContainer = document.getElementById('applicant-table');
 const tableHeaders = ['Date', 'Name', 'Email Address', 'Contact Number', 'Message'];
 
-const supabaseUrl = 'https://uhgkseqdeeyfpwoqfjhd.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVoZ2tzZXFkZWV5ZnB3b3FmamhkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY2OTc4NTksImV4cCI6MjA1MjI3Mzg1OX0.JmxtKN-6012HYR75UzpHpnAUv9yBL2mx1jB8bTeZJQo'; // Ensure SUPABASE_KEY is set in your environment variables
-const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
 fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0]; // csv file
 
@@ -71,46 +67,22 @@ function updateTenants(data) {
         date: item['Date'], // Assuming 'Date' is also in the dataset
     }));
 
-    // Iterate over the tenants to check for duplicates based on email
-    formattedData.forEach(async (tenant) => {
-        try {
-            // Check if the tenant already exists by email in Supabase
-            const { data: existingTenant, error } = await _supabase
-                .from('tenants')
-                .select('*')
-                .eq('email', tenant.email)
-                .single();  // Get a single record based on the email
-
-            if (error) {
-                console.error('Error checking existing tenant:', error);
-                return;
-            }
-
-            if (existingTenant) {
-                console.log('Tenant already exists:', tenant.email);
-            } else {
-                // If the tenant does not exist, post the new tenant to the server
-                fetch('/api/tenants', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify([tenant]),  // Send only the current tenant
-                })
-                    .then(res => {
-                        if (!res.ok) {
-                            throw new Error(`Failed to add tenant: ${res.status}`);
-                        }
-                        return res.json();
-                    })
-                    .then(response => {
-                        console.log('Server Response:', response.message);
-                    })
-                    .catch(err => console.error('Error updating tenant:', err));
-            }
-        } catch (err) {
-            console.error('Error processing tenant:', err);
+    // Send formatted data to the server
+    fetch('/api/tenants', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formattedData), // Send array of tenants
+    })
+    .then(res => {
+        if (!res.ok) {
+            throw new Error(`Failed to add tenants: ${res.status}`);
         }
-    });
+        return res.json();
+    })
+    .then(response => {
+        console.log('Server Response:', response.message);
+    })
+    .catch(err => console.error('Error updating tenants:', err));
 }
-
