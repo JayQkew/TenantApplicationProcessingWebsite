@@ -2,6 +2,10 @@ const fileInput = document.getElementById('xlsx-file-input');
 const applicantTableContainer = document.getElementById('applicant-table');
 const tableHeaders = ['Date', 'Name', 'Email Address', 'Contact Number', 'Message'];
 
+const supabaseUrl = 'https://uhgkseqdeeyfpwoqfjhd.supabase.co';
+const supabaseKey = process.env.SUPABASE_KEY; // Ensure SUPABASE_KEY is set in your environment variables
+const supabase = createClient(supabaseUrl, supabaseKey);
+
 fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0]; // csv file
 
