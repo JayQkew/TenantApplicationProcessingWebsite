@@ -68,10 +68,11 @@ function updateTenants(data) {
     }));
 
     // Send formatted data to the server
-    fetch('/api/tenants', {
+    fetch('https://uhgkseqdeeyfpwoqfjhd.supabase.co', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVoZ2tzZXFkZWV5ZnB3b3FmamhkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY2OTc4NTksImV4cCI6MjA1MjI3Mzg1OX0.JmxtKN-6012HYR75UzpHpnAUv9yBL2mx1jB8bTeZJQo`
         },
         body: JSON.stringify(formattedData), // Send array of tenants
     })
