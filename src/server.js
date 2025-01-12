@@ -1,13 +1,12 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-// const cors = require('cors');
-const API_BASE_PATH = process.env.API_BASE_PATH || '';
-
+const pool = require('./db');
 const app = express();
 const PORT = process.env.PORT || 8080;
+const BASE_URL = 'https://<your-supabase-project>.supabase.co';
 
-// app.use(cors({ origin: '*' }));
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -15,32 +14,37 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public','index.html'));
 });
 
-app.get(`/api/tenants`, (req, res) => {
-    const filePath = path.join(__dirname, 'tenants.json');
-    fs.readFile(filePath, (err, data) => {
-        if(err){
-            console.log('Error reading tenants.json:', err);
-            return res.status(500).json({error: 'Failed to read tenants.json'});
-        }
+app.get('/api/tenants', async (req, res) => {
+    try {
+      // Query the database to fetch tenant data
+      const result = await pool.query('SELECT * FROM tenants');
+      res.json(result.rows); // Send the rows as JSON
+    } catch (err) {
+      console.error('Error fetching tenants:', err);
+      res.status(500).json({ error: 'Failed to fetch tenants' });
+    }
+  });
 
-        const tenants = JSON.parse(data);
-        res.json(tenants);
-    });
-});
-
-app.post(`/api/tenants`, (req, res) => {
-    const filePath = path.join(__dirname, 'tenants.json');
-    const updatedTenants = req.body;
-
-    fs.writeFile(filePath, JSON.stringify(updatedTenants, null, 2), 'utf8', err => {
-        if (err) {
-            console.error('Error writing to tenants.json:', err);
-            return res.status(500).json({ error: 'Failed to update tenants.json' });
-        }
-        res.json({ message: 'Tenants updated successfully', tenants: updatedTenants });
-    });
-});
-
+  app.post('/api/tenants', async (req, res) => {
+    const tenants = req.body;
+  
+    try {
+      // Insert tenants into the PostgreSQL database
+      for (const tenant of tenants) {
+        const { name, email, phone } = tenant;
+        await pool.query(
+          'INSERT INTO tenants(name, email, phone) VALUES($1, $2, $3)',
+          [name, email, phone]
+        );
+      }
+  
+      res.json({ message: 'Tenants added successfully' });
+    } catch (err) {
+      console.error('Error adding tenants:', err);
+      res.status(500).json({ error: 'Failed to add tenants' });
+    }
+  });
+  
 app.listen(PORT, ()=>{
     console.log(`Server is listening on port ${PORT}`)
 });
