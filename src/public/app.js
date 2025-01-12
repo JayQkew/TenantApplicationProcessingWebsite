@@ -67,21 +67,46 @@ function updateTenants(data) {
         date: item['Date'], // Assuming 'Date' is also in the dataset
     }));
 
-    fetch('/api/tenants', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formattedData),
-    })
-        .then(res => {
-            if (!res.ok) {
-                throw new Error(`Failed to add tenants: ${res.status}`);
+    // Iterate over the tenants to check for duplicates based on email
+    formattedData.forEach(async (tenant) => {
+        try {
+            // Check if the tenant already exists by email in Supabase
+            const { data: existingTenant, error } = await supabase
+                .from('tenants')
+                .select('*')
+                .eq('email', tenant.email)
+                .single();  // Get a single record based on the email
+
+            if (error) {
+                console.error('Error checking existing tenant:', error);
+                return;
             }
-            return res.json();
-        })
-        .then(response => {
-            console.log('Server Response:', response.message);
-        })
-        .catch(err => console.error('Error updating tenants:', err));
+
+            if (existingTenant) {
+                console.log('Tenant already exists:', tenant.email);
+            } else {
+                // If the tenant does not exist, post the new tenant to the server
+                fetch('/api/tenants', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify([tenant]),  // Send only the current tenant
+                })
+                    .then(res => {
+                        if (!res.ok) {
+                            throw new Error(`Failed to add tenant: ${res.status}`);
+                        }
+                        return res.json();
+                    })
+                    .then(response => {
+                        console.log('Server Response:', response.message);
+                    })
+                    .catch(err => console.error('Error updating tenant:', err));
+            }
+        } catch (err) {
+            console.error('Error processing tenant:', err);
+        }
+    });
 }
+
