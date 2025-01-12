@@ -63,8 +63,8 @@ function updateTenants(data) {
         name: item['Name'],
         email: item['Email Address'],
         phone: item['Contact Number'],
-        // message: item['Message'],
-        // date: item['Date'], // Assuming 'Date' is also in the dataset
+        message: item['Message'],
+        date: item['Date'], // Assuming 'Date' is also in the dataset
     }));
 
     fetch('/api/tenants', {
