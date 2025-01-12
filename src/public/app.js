@@ -4,7 +4,7 @@ const tableHeaders = ['Date', 'Name', 'Email Address', 'Contact Number', 'Messag
 
 const supabaseUrl = 'https://uhgkseqdeeyfpwoqfjhd.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVoZ2tzZXFkZWV5ZnB3b3FmamhkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY2OTc4NTksImV4cCI6MjA1MjI3Mzg1OX0.JmxtKN-6012HYR75UzpHpnAUv9yBL2mx1jB8bTeZJQo'; // Ensure SUPABASE_KEY is set in your environment variables
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
 fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0]; // csv file
@@ -75,7 +75,7 @@ function updateTenants(data) {
     formattedData.forEach(async (tenant) => {
         try {
             // Check if the tenant already exists by email in Supabase
-            const { data: existingTenant, error } = await supabase
+            const { data: existingTenant, error } = await _supabase
                 .from('tenants')
                 .select('*')
                 .eq('email', tenant.email)
