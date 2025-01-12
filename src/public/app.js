@@ -1,7 +1,6 @@
 const fileInput = document.getElementById('xlsx-file-input');
 const applicantTableContainer = document.getElementById('applicant-table');
 const tableHeaders = ['Date', 'Name', 'Email Address', 'Contact Number', 'Message'];
-import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = 'https://uhgkseqdeeyfpwoqfjhd.supabase.co';
 const supabaseKey = process.env.SUPABASE_KEY; // Ensure SUPABASE_KEY is set in your environment variables
