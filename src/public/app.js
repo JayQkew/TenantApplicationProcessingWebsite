@@ -25,7 +25,7 @@ fileInput.addEventListener('change', (e) => {
             console.log(uniqueApplicants);
             // update the tenant.json with new tenants
             
-            fetch(`${BASE_URL}/api/tenants`)
+            fetch(`/api/tenants`)
             .then(res => {
                 if (!res.ok) {
                     throw new Error(`Failed to fetch tenants: ${res.status}`);
@@ -69,7 +69,7 @@ function createTable(data){
 }
 
 function updateTenants(data){
-    fetch(`${BASE_URL}/api/tenants`, {
+    fetch(`/api/tenants`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

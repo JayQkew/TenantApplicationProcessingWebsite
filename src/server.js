@@ -1,13 +1,13 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-const cors = require('cors');
+// const cors = require('cors');
 const API_BASE_PATH = process.env.API_BASE_PATH || '';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-app.use(cors({ origin: '*' }));
+// app.use(cors({ origin: '*' }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
