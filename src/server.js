@@ -40,6 +40,8 @@ app.get('/api/tenants', async (req, res) => {
 app.post('/api/tenants', async (req, res) => {
   const tenants = req.body;
 
+  console.log(tenants);
+
   try {
       // Check for duplicates based on email
       for (const tenant of tenants) {
