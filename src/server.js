@@ -1,17 +1,15 @@
 const express = require('express');
 const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
-// const cors = require('cors');
-
 const app = express();
+
 const PORT = process.env.PORT || 8080;
 
 // Supabase setup
 const supabaseUrl = 'https://uhgkseqdeeyfpwoqfjhd.supabase.co';
-const supabaseKey = process.env.SUPABASE_KEY; // Ensure SUPABASE_KEY is set in your environment variables
+const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -38,9 +36,9 @@ app.get('/api/tenants', async (req, res) => {
 
 // Add tenants to the database
 app.post('/api/tenants', async (req, res) => {
-  const tenants = req.body;
+  const newTenants = req.body;
 
-  console.log(tenants);
+  console.log(newTenants);
 
   try {
       // Step 1: Fetch all existing tenants from the database
@@ -55,13 +53,15 @@ app.post('/api/tenants', async (req, res) => {
 
       // Step 2: Filter the incoming tenants to find the new ones
       const existingEmails = existingTenants.map(tenant => tenant.email);
-      const newTenants = tenants.filter(tenant => !existingEmails.includes(tenant.email));
+      const newTenants = newTenants.filter(tenant => !existingEmails.includes(tenant.email));
 
       console.log('New Tenants:', newTenants);
 
       // Step 3: Insert new tenants into the database
       if (newTenants.length > 0) {
-          const { error: insertError } = await supabase.from('tenants').insert(newTenants);
+          const { error: insertError } = await supabase
+            .from('tenants')
+            .insert(newTenants);
 
           if (insertError) {
               console.error('Error adding tenants:', insertError);

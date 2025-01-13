@@ -1,19 +1,19 @@
-const fileInput = document.getElementById('xlsx-file-input');
-const applicantTableContainer = document.getElementById('applicant-table');
+const fileInput = document.querySelector('.file-input');
+const applicantTableContainer = document.querySelector('.applicant-table');
 const tableHeaders = ['Date', 'Name', 'Email Address', 'Contact Number', 'Message'];
 
 fileInput.addEventListener('change', (e) => {
-    const file = e.target.files[0]; // csv file
+    const file = e.target.files[0]; // first file
 
     if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
             const csvString = e.target.result;
 
-            // Using PapaParse library to parse the CSV data
+            // Using PapaParse library to parse the CSV data (remove empty spaces, use headers for objects)
             const parsedData = Papa.parse(csvString, {
-                header: true, // Extract headers
-                skipEmptyLines: true, // Ignore empty lines
+                header: true,
+                skipEmptyLines: true
             });
 
             // Remove duplicates by Email Address
@@ -64,7 +64,7 @@ function updateTenants(data) {
         email: item['Email Address'],
         phone: item['Contact Number'],
         message: item['Message'],
-        date: item['Date'], // Assuming 'Date' is also in the dataset
+        date: item['Date'],
     }));
 
     // Send formatted data to the server
@@ -73,13 +73,13 @@ function updateTenants(data) {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formattedData), // Send array of tenants
+        body: JSON.stringify(formattedData), // makes formattedData into JSON notation
     })
     .then(res => {
         if (!res.ok) {
             throw new Error(`Failed to add tenants: ${res.status}`);
         }
-        return res.json();
+        return res.json(); // makes the JSON into a JavaScript Object
     })
     .then(response => {
         console.log('Server Response:', response.message);
