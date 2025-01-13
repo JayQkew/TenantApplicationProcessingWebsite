@@ -22,9 +22,7 @@ fileInput.addEventListener('change', (e) => {
             console.log('Unique Applicants:', uniqueApplicants);
 
             // Display the parsed table
-            const table = createTable(uniqueApplicants);
-            applicantTableContainer.innerHTML = '';
-            applicantTableContainer.appendChild(table);
+            createTable(uniqueApplicants);
 
             // Post new applicants to the database
             updateTenants(uniqueApplicants);
@@ -34,6 +32,8 @@ fileInput.addEventListener('change', (e) => {
 });
 
 function createTable(data) {
+    applicantTableContainer.innerHTML = '';
+
     const table = document.createElement('table');
 
     const headerRow = document.createElement('tr');
@@ -54,7 +54,7 @@ function createTable(data) {
         table.appendChild(tableRow);
     });
 
-    return table;
+    applicantTableContainer.appendChild(table);
 }
 
 function updateTenants(data) {
