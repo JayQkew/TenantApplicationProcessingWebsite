@@ -10,7 +10,12 @@
 </head>
 <body>
     <main>
-        <input type="file" class="file-input" accept=".xlsx, .csv">
+        <div class="container">
+            <label for="file-input" id="drop-area">
+                <input type="file" id="file-input" accept=".xlsx, .csv" hidden>
+                <p>drag and drop here or click to upload file</p>
+            </label>
+        </div>
         <div class="applicant-table"></div>
     </main>
     <script src="app.js"></script>

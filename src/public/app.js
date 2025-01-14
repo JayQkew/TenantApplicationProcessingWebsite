@@ -1,4 +1,4 @@
-const fileInput = document.querySelector('.file-input');
+const fileInput = document.querySelector('#file-input');
 const applicantTableContainer = document.querySelector('.applicant-table');
 const tableHeaders = ['Date', 'Name', 'Email Address', 'Contact Number', 'Message'];
 

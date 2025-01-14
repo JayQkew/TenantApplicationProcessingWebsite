@@ -1,3 +1,29 @@
+*,
+::after,
+::before {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+main{
+    padding: 2rem;
+}
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#drop-area{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 20rem;
+    background-color: #ddd;
+}
+
 table {
     border-collapse: collapse;
     width: 100%;
