@@ -111,27 +111,63 @@ function createPaginationControls() {
     if (!paginationContainer) return;
 
     const totalPages = applicantPages.length;
+    const maxVisiblePages = 3; // Number of visible pages before ellipses
 
-    paginationContainer.innerHTML = `
-        <button class="prev-page" ${currentPage === 1 ? 'disabled' : ''}>Previous</button>
-        <span>Page ${currentPage} of ${totalPages}</span>
-        <button class="next-page" ${currentPage === totalPages ? 'disabled' : ''}>Next</button>
-    `;
+    paginationContainer.innerHTML = '';
 
-    // Add event listeners for navigation buttons
-    paginationContainer.querySelector('.prev-page').addEventListener('click', () => {
+    // Previous Button
+    const prevButton = document.createElement('button');
+    prevButton.textContent = '<';
+    prevButton.className = 'prev-page';
+    prevButton.disabled = currentPage === 1;
+    prevButton.addEventListener('click', () => {
         if (currentPage > 1) {
             currentPage--;
             createTable(currentPage);
         }
     });
+    paginationContainer.appendChild(prevButton);
 
-    paginationContainer.querySelector('.next-page').addEventListener('click', () => {
+    // Page Buttons
+    const pageButtons = document.createElement('span');
+    for (let i = 1; i <= totalPages; i++) {
+        if (
+            i === 1 || // Always show first page
+            i === totalPages || // Always show last page
+            (i >= currentPage - Math.floor(maxVisiblePages / 2) && i <= currentPage + Math.floor(maxVisiblePages / 2))
+        ) {
+            const pageButton = document.createElement('button');
+            pageButton.textContent = i;
+            pageButton.className = `page-button ${i === currentPage ? 'active' : ''}`;
+            pageButton.addEventListener('click', () => {
+                currentPage = i;
+                createTable(currentPage);
+            });
+            pageButtons.appendChild(pageButton);
+        } else if (
+            (i === currentPage - Math.ceil(maxVisiblePages / 2) && i > 1) ||
+            (i === currentPage + Math.ceil(maxVisiblePages / 2) && i < totalPages)
+        ) {
+            const ellipsis = document.createElement('span');
+            ellipsis.textContent = '...';
+            ellipsis.className = 'ellipsis';
+            pageButtons.appendChild(ellipsis);
+        }
+    }
+    paginationContainer.appendChild(pageButtons);
+
+    // Next Button
+    const nextButton = document.createElement('button');
+    nextButton.textContent = '>';
+    nextButton.className = 'next-page';
+    nextButton.disabled = currentPage === totalPages;
+    nextButton.addEventListener('click', () => {
         if (currentPage < totalPages) {
             currentPage++;
             createTable(currentPage);
         }
     });
+    paginationContainer.appendChild(nextButton);
 }
 
 
