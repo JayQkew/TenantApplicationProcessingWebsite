@@ -1,6 +1,10 @@
 const fileInput = document.querySelector('#file-input');
 const applicantTableContainer = document.querySelector('.applicant-table');
 const tableHeaders = ['Date', 'Name', 'Email Address', 'Contact Number', 'Message'];
+const applicants = [];
+
+const displayRowSelector = document.getElementById('table-row-selector');
+const displayRowNumbers = [5, 10, 20, 50, 100, 0]; //0 = display all
 
 fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0]; // first file
@@ -18,6 +22,7 @@ fileInput.addEventListener('change', (e) => {
 
             // Remove duplicates by Email Address
             const uniqueApplicants = Array.from(new Map(parsedData.data.map(item => [item['Email Address'], item])).values());
+            applicants = uniqueApplicants;
 
             console.log('Unique Applicants:', uniqueApplicants);
 
@@ -30,6 +35,15 @@ fileInput.addEventListener('change', (e) => {
         reader.readAsText(file);
     }
 });
+
+createSelection();
+
+function createSelection(){
+    displayRowNumbers.map(row => {
+        const option = `<option value="${row}">${(row != 0) ? row : 'All'}</option>`
+        displayRowSelector.innerHTML += option;
+    })
+}
 
 function createTable(data) {
     applicantTableContainer.innerHTML = '';
