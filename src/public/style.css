@@ -10,11 +10,14 @@
 main{
     padding: 2rem;
 }
+
 .container{
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-bottom: 2rem;
 }
+
 #drop-area{
     display: flex;
     justify-content: center;
@@ -22,12 +25,42 @@ main{
     width: 100vw;
     height: 20rem;
     background-color: #ddd;
+    border-radius: 1.5rem;
+}
+
+.applicants{
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.all-applicants{
+    display: flex;
+    width: 50%;
+    flex-direction: column;
+    align-items: start;
+}
+.applicant-table{
+    width: 100%;
+}
+.table-controls{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.display-rows{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
 }
 
 table {
     border-collapse: collapse;
     width: 100%;
-    margin: 20px 0;
+    margin-bottom: 1rem;
 }
 th, td {
     border: 1px solid #ddd;
@@ -36,4 +69,12 @@ th, td {
 }
 th {
     background-color: #f4f4f4;
+}
+
+.specific-applicant{
+    width: 50%;
+    height: 20rem;
+    content: '';
+    background-color: #ddd;
+    border-radius: 1.5rem;
 }

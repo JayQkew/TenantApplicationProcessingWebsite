@@ -16,13 +16,19 @@
                 <p>drag and drop here or click to upload file</p>
             </label>
         </div>
-        <div class="display-rows">
-            <p>Display rows</p>
-            <select id="table-row-selector">
-            </select>
+        <div class="applicants">
+            <div class="all-applicants">
+                <div class="applicant-table"></div>
+                <div class="table-controls">
+                    <div id="pagination-controls"></div>
+                    <div class="display-rows">
+                        <p>Display rows</p>
+                        <select id="table-row-selector"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="specific-applicant"></div>
         </div>
-        <div class="applicant-table"></div>
-        <div id="pagination-controls"></div>
     </main>
     <script src="app.js"></script>
 </body>

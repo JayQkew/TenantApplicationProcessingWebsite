@@ -1,10 +1,10 @@
 const fileInput = document.querySelector('#file-input');
 const applicantTableContainer = document.querySelector('.applicant-table');
-const tableHeaders = ['Date', 'Name', 'Email Address', 'Contact Number', 'Message'];
+const tableHeaders = ['Name', 'Email Address', 'Contact Number'];
 let applicants = [];
 
 const displayRowSelector = document.getElementById('table-row-selector');
-const displayRowNumbers = [0, 5, 10, 20, 50, 100]; //0 = display all
+const displayRowNumbers = [10, 20, 50, 100, 0]; //0 = display all
 let currentPage = 1;
 let applicantPages; //2D array with applicants on the same page being in the same inner array
 
@@ -28,7 +28,7 @@ fileInput.addEventListener('change', (e) => {
 
             console.log('Unique Applicants:', uniqueApplicants);
 
-            rearrangeArray(0);
+            rearrangeArray(10);
 
             // Display the parsed table
             createTable(1);
@@ -46,7 +46,7 @@ displayRowSelector.addEventListener('change', (e) => {
     currentPage = 1;
     rearrangeArray(rowsPerPage);
     createTable(currentPage);
-    
+
 })
 
 createSelection();
