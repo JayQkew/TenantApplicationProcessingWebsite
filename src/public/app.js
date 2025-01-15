@@ -1,10 +1,12 @@
 const fileInput = document.querySelector('#file-input');
 const applicantTableContainer = document.querySelector('.applicant-table');
 const tableHeaders = ['Date', 'Name', 'Email Address', 'Contact Number', 'Message'];
-const applicants = [];
+let applicants = [];
 
 const displayRowSelector = document.getElementById('table-row-selector');
-const displayRowNumbers = [5, 10, 20, 50, 100, 0]; //0 = display all
+const displayRowNumbers = [0, 5, 10, 20, 50, 100]; //0 = display all
+let currentPage = 1;
+let applicantPages; //2D array with applicants on the same page being in the same inner array
 
 fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0]; // first file
@@ -26,8 +28,10 @@ fileInput.addEventListener('change', (e) => {
 
             console.log('Unique Applicants:', uniqueApplicants);
 
+            rearrangeArray(0);
+
             // Display the parsed table
-            createTable(uniqueApplicants);
+            createTable(1);
 
             // Post new applicants to the database
             updateTenants(uniqueApplicants);
@@ -35,6 +39,15 @@ fileInput.addEventListener('change', (e) => {
         reader.readAsText(file);
     }
 });
+
+displayRowSelector.addEventListener('change', (e) => {
+    // change the 2D array to match the value;
+    const rowsPerPage = parseInt(e.target.value, 10);
+    currentPage = 1;
+    rearrangeArray(rowsPerPage);
+    createTable(currentPage);
+    
+})
 
 createSelection();
 
@@ -45,11 +58,26 @@ function createSelection(){
     })
 }
 
-function createTable(data) {
+function rearrangeArray(rowsPerPage) {
+    if (rowsPerPage === 0) {
+        // Display all applicants in a single page
+        applicantPages = [applicants];
+    } else {
+        applicantPages = [];
+        for (let i = 0; i < applicants.length; i += rowsPerPage) {
+            // Slice the applicants array to create chunks
+            applicantPages.push(applicants.slice(i, i + rowsPerPage));
+        }
+    }
+    console.log('Applicant Pages:', applicantPages);
+}
+
+function createTable(pageNumber) {
     applicantTableContainer.innerHTML = '';
 
     const table = document.createElement('table');
 
+    // Create the header row
     const headerRow = document.createElement('tr');
     tableHeaders.forEach(header => {
         const th = document.createElement('th');
@@ -58,9 +86,13 @@ function createTable(data) {
     });
     table.appendChild(headerRow);
 
-    data.forEach(row => {
+    // Ensure data exists for the specified page
+    const pageData = applicantPages[pageNumber - 1] || [];
+
+    // Create rows for the data
+    pageData.forEach(row => {
         const tableRow = document.createElement('tr');
-        Object.keys(row).forEach(header => {
+        tableHeaders.forEach(header => {
             const td = document.createElement('td');
             td.textContent = row[header] || '';
             tableRow.appendChild(td);
@@ -69,7 +101,39 @@ function createTable(data) {
     });
 
     applicantTableContainer.appendChild(table);
+
+    // Display pagination controls
+    createPaginationControls();
 }
+
+function createPaginationControls() {
+    const paginationContainer = document.getElementById('pagination-controls');
+    if (!paginationContainer) return;
+
+    const totalPages = applicantPages.length;
+
+    paginationContainer.innerHTML = `
+        <button class="prev-page" ${currentPage === 1 ? 'disabled' : ''}>Previous</button>
+        <span>Page ${currentPage} of ${totalPages}</span>
+        <button class="next-page" ${currentPage === totalPages ? 'disabled' : ''}>Next</button>
+    `;
+
+    // Add event listeners for navigation buttons
+    paginationContainer.querySelector('.prev-page').addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            createTable(currentPage);
+        }
+    });
+
+    paginationContainer.querySelector('.next-page').addEventListener('click', () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            createTable(currentPage);
+        }
+    });
+}
+
 
 function updateTenants(data) {
     // Convert to Supabase-compatible format
