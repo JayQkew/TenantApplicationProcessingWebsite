@@ -78,18 +78,21 @@ function createTable(pageNumber) {
     const table = document.createElement('table');
 
     // Create the header row
+    const header = document.createElement('thead');
     const headerRow = document.createElement('tr');
     tableHeaders.forEach(header => {
         const th = document.createElement('th');
         th.textContent = header;
         headerRow.appendChild(th);
     });
-    table.appendChild(headerRow);
+    header.appendChild(headerRow);
+    table.appendChild(header);
 
     // Ensure data exists for the specified page
     const pageData = applicantPages[pageNumber - 1] || [];
 
     // Create rows for the data
+    const body = document.createElement('tbody');
     pageData.forEach(row => {
         const tableRow = document.createElement('tr');
         tableHeaders.forEach(header => {
@@ -97,8 +100,9 @@ function createTable(pageNumber) {
             td.textContent = row[header] || '';
             tableRow.appendChild(td);
         });
-        table.appendChild(tableRow);
+        body.appendChild(tableRow);
     });
+    table.appendChild(body);
 
     applicantTableContainer.appendChild(table);
 
