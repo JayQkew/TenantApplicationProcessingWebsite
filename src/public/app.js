@@ -278,7 +278,7 @@ function displayApplicantInfo(applicant) {
 }
 
 function saveApplicantNote(email) {
-    const noteInput = document.querySelector('.note-input');
+    const noteInput = document.querySelector('#note-input');
     const note = noteInput.value.trim();
 
     if (!note) {
