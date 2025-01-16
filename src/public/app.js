@@ -1,7 +1,7 @@
 const fileInput = document.querySelector('#file-input');
 const applicantTableContainer = document.querySelector('.applicant-table');
 const tableHeaders = ['Name', 'Email Address', 'Contact Number'];
-const applicantInfo = ['Name', 'Date', 'Email Address', 'Contact Number', 'Message'];
+const applicantInfo = ['Name', 'Date', 'Email Address', 'Contact Number', 'Message', 'Note'];
 let applicants = [];
 
 const displayRowSelector = document.getElementById('table-row-selector');
@@ -259,13 +259,15 @@ function displayApplicantInfo(applicant) {
         applicantInfoPage.innerHTML += infoElement;
     });
 
+    const noteValue = applicant['Note'] || ''; // Use the note from applicant data or an empty string
+
     const noteSection = `
     <div class="applicant-note applicant-data-container">
         <span class="data-type">
             Note:
         </span>
         <div class="note-container">
-            <textarea id="note-input" rows="4" placeholder="Write a note..."></textarea>
+            <textarea id="note-input" rows="4" placeholder="Write a note...">${noteValue}</textarea>
             <button class="save-note-button">Save Note</button>
         </div>
     </div>`;
@@ -274,8 +276,8 @@ function displayApplicantInfo(applicant) {
     // Attach event listener to save note button
     const saveNoteButton = applicantInfoPage.querySelector('.save-note-button');
     saveNoteButton.addEventListener('click', () => saveApplicantNote(applicant['Email Address']));
-
 }
+
 
 function saveApplicantNote(email) {
     const noteInput = document.querySelector('#note-input');
