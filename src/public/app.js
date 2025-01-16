@@ -259,6 +259,22 @@ function displayApplicantInfo(applicant) {
         applicantInfoPage.innerHTML += infoElement;
     });
 
+    const noteSection = `
+    <div class="applicant-note applicant-data-container">
+        <span class="data-type">
+            Note:
+        </span>
+        <div class="note-container">
+            <textarea id="note-input" rows="4" placeholder="Write a note..."></textarea>
+            <button class="save-note-button">Save Note</button>
+        </div>
+    </div>`;
+    applicantInfoPage.innerHTML += noteSection;
+
+    // Attach event listener to save note button
+    const saveNoteButton = applicantInfoPage.querySelector('.save-note-button');
+    saveNoteButton.addEventListener('click', () => saveApplicantNote(applicant['Email Address']));
+
 }
 
 function saveApplicantNote(email) {
