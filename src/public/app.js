@@ -1,7 +1,7 @@
 const fileInput = document.querySelector('#file-input');
 const applicantTableContainer = document.querySelector('.applicant-table');
 const tableHeaders = ['Name', 'Email Address', 'Contact Number'];
-const applicantInfo = ['Name', 'Date', 'Email Address', 'Contact Number', 'Message', 'Note'];
+const applicantInfo = ['Name', 'Date', 'Email Address', 'Contact Number', 'Message'];
 let applicants = [];
 
 const displayRowSelector = document.getElementById('table-row-selector');
@@ -260,6 +260,7 @@ function displayApplicantInfo(applicant) {
     });
 
     const noteValue = applicant['Note'] || ''; // Use the note from applicant data or an empty string
+    console.log(noteValue);
 
     const noteSection = `
     <div class="applicant-note applicant-data-container">
