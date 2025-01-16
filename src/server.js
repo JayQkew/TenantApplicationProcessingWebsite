@@ -79,10 +79,6 @@ app.post('/api/tenants', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is listening on port ${PORT}`);
-});
-
 app.post('/api/tenants/note', async (req, res) => {
     const { email, note } = req.body;
 
@@ -111,4 +107,8 @@ app.post('/api/tenants/note', async (req, res) => {
         console.error('Unexpected error saving note:', err);
         res.status(500).json({ error: 'Unexpected error saving note' });
     }
+});
+
+app.listen(PORT, () => {
+    console.log(`Server is listening on port ${PORT}`);
 });
