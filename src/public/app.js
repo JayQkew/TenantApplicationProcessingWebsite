@@ -1,6 +1,7 @@
 const fileInput = document.querySelector('#file-input');
 const applicantTableContainer = document.querySelector('.applicant-table');
 const tableHeaders = ['Name', 'Email Address', 'Contact Number'];
+const applicantInfo = ['Name', 'Date', 'Email Address', 'Contact Number', 'Message'];
 let applicants = [];
 
 const displayRowSelector = document.getElementById('table-row-selector');
@@ -50,6 +51,7 @@ displayRowSelector.addEventListener('change', (e) => {
 })
 
 createSelection();
+createApplicantInfo();
 
 function createSelection(){
     displayRowNumbers.map(row => {
@@ -100,6 +102,7 @@ function createTable(pageNumber) {
             td.textContent = row[header] || '';
             tableRow.appendChild(td);
         });
+        tableRow.addEventListener('click', () => displayApplicantInfo(row));
         body.appendChild(tableRow);
     });
     table.appendChild(body);
@@ -174,7 +177,6 @@ function createPaginationControls() {
     paginationContainer.appendChild(nextButton);
 }
 
-
 function updateTenants(data) {
     // Convert to Supabase-compatible format
     const formattedData = data.map(item => ({
@@ -203,4 +205,40 @@ function updateTenants(data) {
         console.log('Server Response:', response.message);
     })
     .catch(err => console.error('Error updating tenants:', err));
+}
+
+function createApplicantInfo(){
+    const applicantInfoPage = document.querySelector('.specific-applicant')
+
+    applicantInfo.map(info => {
+        const formattedInfo = info.toLowerCase().replace(/\s+/g, '-');
+        const infoElement = `
+            <div class="applicant-${formattedInfo} applicant-data-container">
+                <span class="data-type">
+                    ${info} :
+                </span>
+                <span class="data-${formattedInfo} data-values">
+                </span>
+            </div>`;
+        applicantInfoPage.innerHTML += infoElement;
+    })
+}
+
+function displayApplicantInfo(applicant) {
+    const applicantInfoPage = document.querySelector('.specific-applicant');
+    applicantInfoPage.innerHTML = ''; // Clear previous data
+
+    applicantInfo.forEach(info => {
+        const formattedInfo = info.toLowerCase().replace(/\s+/g, '-');
+        const infoElement = `
+            <div class="applicant-${formattedInfo} applicant-data-container">
+                <span class="data-type">
+                    ${info}:
+                </span>
+                <span class="data-${formattedInfo} data-values">
+                    ${applicant[info] || 'N/A'}
+                </span>
+            </div>`;
+        applicantInfoPage.innerHTML += infoElement;
+    });
 }

@@ -97,9 +97,25 @@ table tfoot:not(:last-child) {
 }
 
 .specific-applicant{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 0.5rem;
     width: 50%;
-    height: 20rem;
+    /* height: 20rem; */
     content: '';
     background-color: #ddd;
     border-radius: 1.5rem;
+    padding: 1rem;
+}
+
+.applicant-data-container{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.data-type{
+    width: 33%;
 }
