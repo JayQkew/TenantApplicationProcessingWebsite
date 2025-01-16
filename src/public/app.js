@@ -222,6 +222,23 @@ function createApplicantInfo(){
             </div>`;
         applicantInfoPage.innerHTML += infoElement;
     })
+
+    const noteSection = `
+        <div class="applicant-note applicant-data-container">
+            <span class="data-type">
+                Note:
+            </span>
+            <div class="note-container">
+                <textarea id="note-input" rows="4" placeholder="Write a note..."></textarea>
+                <button class="save-note-button">Save Note</button>
+            </div>
+        </div>`;
+    applicantInfoPage.innerHTML += noteSection;
+
+    // Attach event listener to save note button
+    const saveNoteButton = applicantInfoPage.querySelector('.save-note-button');
+    saveNoteButton.addEventListener('click', () => saveApplicantNote(applicant['Email Address']));
+
 }
 
 function displayApplicantInfo(applicant) {
@@ -241,4 +258,35 @@ function displayApplicantInfo(applicant) {
             </div>`;
         applicantInfoPage.innerHTML += infoElement;
     });
+
+}
+
+function saveApplicantNote(email) {
+    const noteInput = document.querySelector('.note-input');
+    const note = noteInput.value.trim();
+
+    if (!note) {
+        alert('Please write a note before saving.');
+        return;
+    }
+
+    // Save the note to the database
+    fetch('https://shih-tenant-application-processing.onrender.com/api/tenants/note', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, note }), // Send email and note as payload
+    })
+    .then(res => {
+        if (!res.ok) {
+            throw new Error(`Failed to save note: ${res.status}`);
+        }
+        return res.json();
+    })
+    .then(response => {
+        console.log('Note saved successfully:', response.message);
+        alert('Note saved successfully!');
+    })
+    .catch(err => console.error('Error saving note:', err));
 }

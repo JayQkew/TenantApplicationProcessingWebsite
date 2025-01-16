@@ -82,3 +82,33 @@ app.post('/api/tenants', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
 });
+
+app.post('/api/tenants/note', async (req, res) => {
+    const { email, note } = req.body;
+
+    if (!email || !note) {
+        return res.status(400).json({ error: 'Email and note are required' });
+    }
+
+    try {
+        // Update the tenant's note in the database
+        const { data, error } = await supabase
+            .from('tenants')
+            .update({ note }) // Update the note field
+            .eq('email', email); // Match the email
+
+        if (error) {
+            console.error('Error updating note:', error);
+            return res.status(500).json({ error: 'Failed to update note' });
+        }
+
+        if (data.length === 0) {
+            return res.status(404).json({ error: 'Tenant not found' });
+        }
+
+        res.json({ message: 'Note saved successfully' });
+    } catch (err) {
+        console.error('Unexpected error saving note:', err);
+        res.status(500).json({ error: 'Unexpected error saving note' });
+    }
+});

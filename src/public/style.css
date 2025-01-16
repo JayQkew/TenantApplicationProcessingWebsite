@@ -111,11 +111,28 @@ table tfoot:not(:last-child) {
 }
 
 .applicant-data-container{
-    width: 100%;
     display: flex;
+    width: 100%;
     flex-direction: row;
+    gap: 1rem;
 }
 
 .data-type{
-    width: 33%;
+    width: 7.5rem;
+    flex-shrink: 0;
+}
+
+.note-container{
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.note-input{
+    flex-grow: 0;
+}
+
+.save-note-button{
+    flex-grow: 0;
 }
