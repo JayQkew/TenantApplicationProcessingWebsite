@@ -25,17 +25,13 @@ fileInput.addEventListener('change', (e) => {
 
             // Remove duplicates by Email Address
             const uniqueApplicants = Array.from(new Map(parsedData.data.map(item => [item['Email Address'], item])).values());
-            applicants = uniqueApplicants;
+            
 
             console.log('Unique Applicants:', uniqueApplicants);
-
-            applicantsToPages(10);
-
-            // Display the parsed table
-            createTable(1);
-
             // Post new applicants to the database
             updateDatabase_tenants(uniqueApplicants);
+
+            getApplicantsFromDatabase();
         };
         reader.readAsText(file);
     }
@@ -70,6 +66,8 @@ function getApplicantsFromDatabase() {
                 'Message': applicant.message,
                 'Note': applicant.note
             }));
+
+            applicants.sort((a, b) => new Date(b['Date']) - new Date(a['Date']));
 
             // Paginate the applicants and render the first page
             applicantsToPages(10);
