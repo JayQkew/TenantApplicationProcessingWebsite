@@ -1,4 +1,6 @@
 const fileInput = document.querySelector('#file-input');
+const _displayRowSelector = document.getElementById('table-row-selector');
+
 const tableHeaders = ['Name', 'Email Address', 'Contact Number'];
 let applicants = [];
 
@@ -25,7 +27,7 @@ fileInput.addEventListener('change', (e) => {
 
             console.log('Unique Applicants:', uniqueApplicants);
 
-            rearrangeArray(10);
+            applicantsToPages(10);
 
             // Display the parsed table
             createTable(1);
@@ -37,24 +39,16 @@ fileInput.addEventListener('change', (e) => {
     }
 });
 
-displayRowSelector.addEventListener('change', (e) => {
+_displayRowSelector.addEventListener('change', (e) => {
     // change the 2D array to match the value;
     const rowsPerPage = parseInt(e.target.value, 10);
     currentPage = 1;
-    rearrangeArray(rowsPerPage);
+    applicantsToPages(rowsPerPage);
     createTable(currentPage);
 
 })
 
-
-function createSelection(){
-    displayRowNumbers.map(row => {
-        const option = `<option value="${row}">${(row != 0) ? row : 'All'}</option>`
-        displayRowSelector.innerHTML += option;
-    })
-}
-
-function rearrangeArray(rowsPerPage) {
+function applicantsToPages(rowsPerPage) {
     if (rowsPerPage === 0) {
         // Display all applicants in a single page
         applicantPages = [applicants];
@@ -201,40 +195,6 @@ function updateTenants(data) {
     .catch(err => console.error('Error updating tenants:', err));
 }
 
-function createApplicantInfo(){
-    const applicantInfoPage = document.querySelector('.specific-applicant')
-
-    applicantInfo.map(info => {
-        const formattedInfo = info.toLowerCase().replace(/\s+/g, '-');
-        const infoElement = `
-            <div class="applicant-${formattedInfo} applicant-data-container">
-                <span class="data-type">
-                    ${info} :
-                </span>
-                <span class="data-${formattedInfo} data-values">
-                </span>
-            </div>`;
-        applicantInfoPage.innerHTML += infoElement;
-    })
-
-    const noteSection = `
-        <div class="applicant-note applicant-data-container">
-            <span class="data-type">
-                Note:
-            </span>
-            <div class="note-container">
-                <textarea id="note-input" rows="4" placeholder="Write a note..."></textarea>
-                <button class="save-note-button">Save Note</button>
-            </div>
-        </div>`;
-    applicantInfoPage.innerHTML += noteSection;
-
-    // Attach event listener to save note button
-    const saveNoteButton = applicantInfoPage.querySelector('.save-note-button');
-    saveNoteButton.addEventListener('click', () => saveApplicantNote(applicant['Email Address']));
-
-}
-
 function displayApplicantInfo(applicant) {
     const applicantInfoPage = document.querySelector('.specific-applicant');
     applicantInfoPage.innerHTML = ''; // Clear previous data
@@ -272,7 +232,6 @@ function displayApplicantInfo(applicant) {
     const saveNoteButton = applicantInfoPage.querySelector('.save-note-button');
     saveNoteButton.addEventListener('click', () => saveApplicantNote(applicant['Email Address']));
 }
-
 
 function saveApplicantNote(email) {
     const noteInput = document.querySelector('#note-input');
