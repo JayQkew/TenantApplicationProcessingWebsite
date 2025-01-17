@@ -7,6 +7,8 @@ let applicants = [];
 let currentPage = 1;
 let applicantPages; //2D array with applicants on the same page being in the same inner array
 
+getApplicantsFromDatabase();
+
 fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0]; // first file
 
@@ -33,7 +35,7 @@ fileInput.addEventListener('change', (e) => {
             createTable(1);
 
             // Post new applicants to the database
-            updateTenants(uniqueApplicants);
+            updateDatabase_tenants(uniqueApplicants);
         };
         reader.readAsText(file);
     }
@@ -47,6 +49,35 @@ _displayRowSelector.addEventListener('change', (e) => {
     createTable(currentPage);
 
 })
+
+function getApplicantsFromDatabase() {
+    fetch('https://shih-tenant-application-processing.onrender.com/api/tenants')
+        .then(res => {
+            if (!res.ok) {
+                throw new Error(`Failed to fetch applicants: ${res.status}`);
+            }
+            return res.json(); // Convert response to JavaScript object
+        })
+        .then(data => {
+            console.log('Applicants fetched from database:', data);
+
+            // Map the fetched data to match the tableHeaders structure
+            applicants = data.map(applicant => ({
+                'Name': applicant.name,
+                'Email Address': applicant.email,
+                'Contact Number': applicant.phone,
+                'Date': applicant.date,
+                'Message': applicant.message,
+                'Note': applicant.note
+            }));
+
+            // Paginate the applicants and render the first page
+            applicantsToPages(10);
+            createTable(1);
+        })
+        .catch(err => console.error('Error fetching applicants from database:', err));
+}
+
 
 function applicantsToPages(rowsPerPage) {
     if (rowsPerPage === 0) {
@@ -90,7 +121,7 @@ function createTable(pageNumber) {
             td.textContent = row[header] || '';
             tableRow.appendChild(td);
         });
-        tableRow.addEventListener('click', () => displayApplicantInfo(row));
+        tableRow.addEventListener('click', () => displaySpecificApplicantInfo(row));
         body.appendChild(tableRow);
     });
     table.appendChild(body);
@@ -165,7 +196,7 @@ function createPaginationControls() {
     paginationContainer.appendChild(nextButton);
 }
 
-function updateTenants(data) {
+function updateDatabase_tenants(data) {
     // Convert to Supabase-compatible format
     const formattedData = data.map(item => ({
         name: item['Name'],
@@ -195,7 +226,7 @@ function updateTenants(data) {
     .catch(err => console.error('Error updating tenants:', err));
 }
 
-function displayApplicantInfo(applicant) {
+function displaySpecificApplicantInfo(applicant) {
     const applicantInfoPage = document.querySelector('.specific-applicant');
     applicantInfoPage.innerHTML = ''; // Clear previous data
 
